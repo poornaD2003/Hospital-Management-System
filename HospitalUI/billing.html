@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Management</title>
+    <link rel="stylesheet" href="billing.css">
+</head>
+<body>
+
+<div class="dashboard-layout">
+    <aside class="form-sidebar">
+        <div class="brand">
+            <h2>MedSched</h2>
+            <p>Billing Portal</p>
+        </div>
+        
+        <div class="form-card">
+            <h3 id="formTitle">Create Invoice</h3>
+            <form id="billingForm">
+                <input type="hidden" id="billingId">
+
+                <div class="input-group">
+                    <label for="patientName">Patient Name</label>
+                    <input type="text" id="patientName" placeholder="e.g. John Doe" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="serviceName">Service Name</label>
+                    <select id="serviceName" required>
+                            <option value="">-- Select Service --</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Neurology">Neurology</option>
+                            <option value="Dermatology">Dermatology</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                            <option value="General Medicine">General Medicine</option>
+                            <option value="ICU Services">ICU Services</option>
+                            <option value="Dental Care">Dental Care</option>
+                        </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="amount">Amount (Rs)</label>
+                    <input type="number" id="amount" placeholder="0.00" required>
+                </div>
+
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="paymentMethod">Method</label>
+                        <select id="paymentMethod" required>
+                            <option value="Cash">Cash</option>
+                            <option value="Card">Card</option>
+                            <option value="Online">Online</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="paymentStatus">Status</label>
+                        <select id="paymentStatus" required>
+                            <option value="Paid">Paid</option>
+                            <option value="Pending">Pending</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn btn-primary">Save Billing</button>
+                <button type="button" id="cancelBtn" class="btn btn-secondary" style="display: none;">Cancel Edit</button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1>Financial Statements</h1>
+            <p id="billingCount">Loading ledger statements...</p>
+        </header>
+
+        <div id="billingGrid" class="billing-grid"></div>
+    </main>
+</div>
+
+<script src="billing.js"></script>
+</body>
+</html>

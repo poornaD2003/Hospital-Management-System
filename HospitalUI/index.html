@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Left Sidebar: Form Control -->
+        <aside class="form-sidebar">
+            <div class="brand">
+                <h2>MedSched</h2>
+                <p>Appointment Portal</p>
+            </div>
+
+            <div class="form-card">
+                <h3 id="formTitle">Create Appointment</h3>
+                <form id="appointmentForm">
+                    <input type="hidden" id="appointmentId">
+
+                    <div class="input-group">
+                        <label for="patientName">Patient Name</label>
+                        <input type="text" id="patientName" placeholder="e.g. John Doe" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="doctorName">Doctor Name</label>
+                        <input type="text" id="doctorName" placeholder="e.g. Dr. Smith" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="specialization">Specialization</label>
+                        <select id="specialization" required>
+                            <option value="">-- Select Specialization --</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Neurology">Neurology</option>
+                            <option value="Dermatology">Dermatology</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                            <option value="General Medicine">General Medicine</option>
+                        </select>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="appointmentDate">Date</label>
+                            <input type="date" id="appointmentDate" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="appointmentTime">Time</label>
+                            <input type="time" id="appointmentTime" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn btn-primary">Save Appointment</button>
+                    <button type="button" id="cancelBtn" class="btn btn-secondary" style="display: none;">Cancel
+                        Edit</button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Right Main Content: Appointments Grid -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1>Active Appointments</h1>
+                <p id="appointmentCount">Loading schedule...</p>
+            </header>
+
+            <!-- Dynamic Card Container replaces the old Table -->
+            <div id="appointmentGrid" class="appointment-grid"></div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
