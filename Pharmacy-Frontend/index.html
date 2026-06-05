@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Pharmacy Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Smart Hospital Pharmacy Management System</h1>
+    
+    <div class="main-layout">
+        <!-- LEFT COLUMN: INVENTORY STOCK CONTROL -->
+        <div class="column-box">
+            <div class="form-container">
+                <h2>Add / Adjust Medication Stock</h2>
+                <form id="pharmacyForm">
+                    <input type="hidden" id="medicationId">
+                    <label for="medicineName">Medicine Name:</label>
+                    <input type="text" id="medicineName" required placeholder="e.g., Paracetamol 500mg">
+                    <label for="stockQuantity">Stock Quantity:</label>
+                    <input type="number" id="stockQuantity" required placeholder="e.g., 500">
+                    <label for="pricePerUnit">Price Per Unit (LKR):</label>
+                    <input type="number" step="0.01" id="pricePerUnit" required placeholder="e.g., 3.50">
+                    <button type="submit">Save Stock Entry</button>
+                </form>
+            </div>
+
+            <div class="inventory-list">
+                <h2>Current Pharmacy Stock Sheet</h2>
+                <table id="pharmacyTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Medicine Name</th>
+                            <th>Available Stock</th>
+                            <th>Unit Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: PRESCRIPTION ISSUE & BILL GENERATOR -->
+        <div class="column-box">
+            <div class="form-container issue-box">
+                <h2>Medicine Dispensing & Billing Section</h2>
+                <form id="issueForm">
+                    <label for="patientId">Enter Patient ID:</label>
+                    <input type="number" id="patientId" required placeholder="e.g., 2022035">
+                    
+                    <label for="issueMedicineId">Select Medicine (Enter ID):</label>
+                    <input type="number" id="issueMedicineId" required placeholder="Look at the Stock ID on left table">
+                    
+                    <label for="issueQuantity">Quantity to Issue:</label>
+                    <input type="number" id="issueQuantity" required placeholder="e.g., 20">
+                    
+                    <button type="submit" style="background-color: #007bff;">Process & Generate Bill</button>
+                </form>
+            </div>
+
+            <!-- DYNAMIC BILL DISPLAY TARGET -->
+            <div id="billInvoice" class="invoice-container" style="display: none;">
+                <div class="invoice-card">
+                    <h3>📄 OUTPATIENT PHARMACY RECEIPT</h3>
+                    <hr>
+                    <p><strong>Patient Registration ID:</strong> <span id="billPatientId"></span></p>
+                    <p><strong>Issued Medication:</strong> <span id="billMedName"></span></p>
+                    <p><strong>Quantity Dispensed:</strong> <span id="billQty"></span> units</p>
+                    <hr>
+                    <h4 style="text-align: right; margin: 5px 0;">TOTAL BILL AMOUNT: <span id="billTotal" style="color: #d9534f;"></span></h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
