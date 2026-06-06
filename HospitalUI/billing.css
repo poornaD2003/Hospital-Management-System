@@ -48,6 +48,8 @@ body {
         bottom: 0;
         left: 0;
         border-right: 1px solid var(--border-color);
+        overflow-y: auto;       
+        max-height: 100vh;
     }
     .main-content {
         margin-left: 400px;
