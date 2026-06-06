@@ -59,37 +59,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // NEW HANDLER FOR DISPENSING MEDICINE & PRINTING RECEIPTS
+    if (issueForm) { 
     issueForm.addEventListener("submit", (e) => {
         e.preventDefault();
-        const patientId = document.getElementById("patientId").value;
-        const medicineId = document.getElementById("issueMedicineId").value;
-        const quantityIssued = document.getElementById("issueQuantity").value;
+        const issuePayload = {
+            patientId: document.getElementById("issuePatientId").value,
+            medicineId: parseInt(document.getElementById("issueMedicineId").value),
+            quantityIssued: parseInt(document.getElementById("issueQty").value)
+        };
 
         fetch(`${apiBaseUrl}/issue`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ patientId, medicineId, quantityIssued })
+            body: JSON.stringify(issuePayload)
         })
-            .then(async response => {
-                const isJson = response.headers.get('content-type')?.includes('application/json');
-                const data = await response.json();
-                if (!response.ok) {
-                    // Flash stock validation error messages back from backend logic instantly
-                    alert(data && data.message ? data.message : "An error occurred while dispensing medicine.");
-                    document.getElementById("billInvoice").style.display = "none";
-                } else {
-                    // Populate invoice card elements and render output
-                    document.getElementById("billPatientId").innerText = data.patientId;
-                    document.getElementById("billMedName").innerText = data.medicineName;
-                    document.getElementById("billQty").innerText = data.quantityIssued;
-                    document.getElementById("billTotal").innerText = "LKR " + data.totalBill.toFixed(2);
+        .then(response => response.json())
+        .then(data => {
+            if (data.message && data.message.includes("Error")) {
+                alert(data.message);
+            } else {
+                document.getElementById("billPatientId").innerText = data.patientId;
+                document.getElementById("billMedName").innerText = data.medicineName;
+                document.getElementById("billQty").innerText = data.quantityIssued;
+                document.getElementById("billTotal").innerText = "LKR " + data.totalBill.toFixed(2);
 
-                    document.getElementById("billInvoice").style.display = "block";
-                    issueForm.reset();
-                    fetchInventory(); // Reload left stock list view to verify live decrement deduction
-                }
-            });
+                document.getElementById("billInvoice").style.display = "block";
+                issueForm.reset();
+                fetchInventory();
+            }
+        });
     });
+}
 
     window.editMedication = function (id) {
         fetch(`${apiBaseUrl}/${id}`)
