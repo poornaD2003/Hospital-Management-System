@@ -17,7 +17,6 @@ import java.util.List;
 
 @RequestMapping("/api/billing")
 
-@CrossOrigin(origins = "*")
 
 public class BillingController {
 
@@ -42,7 +41,7 @@ public class BillingController {
         return billingService.getAllBilling();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
 
     public ResponseEntity<Billing>
     getBillingById(@PathVariable("id") long billingID){
@@ -53,7 +52,7 @@ public class BillingController {
         );
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
 
     public ResponseEntity<Billing>
     updateBilling(
@@ -67,7 +66,7 @@ public class BillingController {
         );
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
 
     public ResponseEntity<String>
     deleteBilling(@PathVariable("id") long id){
