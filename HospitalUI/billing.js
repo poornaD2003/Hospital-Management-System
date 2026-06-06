@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         medicinesContainer.innerHTML = addedMedicines.length === 0 ? '<span style="font-size:12px; color:#9ca3af;">No medicines added yet.</span>' : '';
         addedMedicines.forEach((med, index) => {
-            servicesContainer.innerHTML += `
+            medicinesContainer.innerHTML += `
                 <div class="item-tag" style="background:#fef08a; color:#854d0e;">
                     <span>${med.medicineName} (Rs.${med.unitPrice} × ${med.quantity})</span>
                     <span class="remove-btn" onclick="removeMedicineItem(${index})">×</span>
