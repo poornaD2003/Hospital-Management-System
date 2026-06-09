@@ -1,7 +1,7 @@
-package com.example.HospitalManagmentSystem.Repository;
+package com.example.Billing_Service.Repository;
 
 
-import com.example.HospitalManagmentSystem.Model.Billing;
+import com.example.Billing_Service.Model.Billing;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

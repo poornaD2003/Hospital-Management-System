@@ -42,15 +42,17 @@ body {
         flex-direction: row;
     }
     .form-sidebar {
-        width: 360px;
+        width: 400px;
         position: fixed;
         top: 0;
         bottom: 0;
         left: 0;
         border-right: 1px solid var(--border-color);
+        overflow-y: auto;       
+        max-height: 100vh;
     }
     .main-content {
-        margin-left: 360px;
+        margin-left: 400px;
         flex: 1;
     }
 }

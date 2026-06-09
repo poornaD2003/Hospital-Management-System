@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        # 1. Appointment Service Route
+        - id: appointment-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/appointments/**
+
+        # 2. Billing Service Route
+        - id: billing-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/billing/**
+
+        # 3. Pharmacy Service Route
+        - id: pharmacy-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/pharmacy/**
+
+        # 4. doctor Service Route
+        - id: doctor-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/doctors/**

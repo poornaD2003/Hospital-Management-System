@@ -1,7 +1,7 @@
-package com.example.HospitalManagmentSystem.Service;
+package com.example.Billing_Service.Service;
 
 
-import com.example.HospitalManagmentSystem.Model.Billing;
+import com.example.Billing_Service.Model.Billing;
 
 import java.util.List;
 

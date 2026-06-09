@@ -16,7 +16,7 @@ import java.util.List;
 
 @RequestMapping("/api/appointments")
 
-@CrossOrigin(origins = "*")
+
 
 public class AppointmentController {
 
@@ -41,7 +41,7 @@ public class AppointmentController {
         return appointmentService.getAllAppointments();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
 
     public ResponseEntity<Appointment>
     getAppointmentById(@PathVariable("id") long appointmentID){
@@ -52,7 +52,7 @@ public class AppointmentController {
         );
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
 
     public ResponseEntity<Appointment>
     updateAppointment(
@@ -66,7 +66,7 @@ public class AppointmentController {
         );
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
 
     public ResponseEntity<String>
     deleteAppointment(@PathVariable("id") long id){

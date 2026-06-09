@@ -1,8 +1,8 @@
-package com.example.HospitalManagmentSystem.Controller;
+package com.example.Billing_Service.Controller;
 
 
-import com.example.HospitalManagmentSystem.Model.Billing;
-import com.example.HospitalManagmentSystem.Service.BillingService;
+import com.example.Billing_Service.Model.Billing;
+import com.example.Billing_Service.Service.BillingService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,7 +17,6 @@ import java.util.List;
 
 @RequestMapping("/api/billing")
 
-@CrossOrigin(origins = "*")
 
 public class BillingController {
 
@@ -42,7 +41,7 @@ public class BillingController {
         return billingService.getAllBilling();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
 
     public ResponseEntity<Billing>
     getBillingById(@PathVariable("id") long billingID){
@@ -53,7 +52,7 @@ public class BillingController {
         );
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
 
     public ResponseEntity<Billing>
     updateBilling(
@@ -67,7 +66,7 @@ public class BillingController {
         );
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
 
     public ResponseEntity<String>
     deleteBilling(@PathVariable("id") long id){
