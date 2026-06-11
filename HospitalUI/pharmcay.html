@@ -3,31 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospital Pharmacy Management</title>
+    <title>Smart Hospital Pharmacy Management System</title>
     <link rel="stylesheet" href="pharmcay.css">
 </head>
 <body>
-    <h1>Smart Hospital Pharmacy Management System</h1>
-    
-    <div class="main-layout">
-        <!-- LEFT COLUMN: INVENTORY STOCK CONTROL -->
-        <div class="column-box">
-            <div class="form-container">
-                <h2>Add / Adjust Medication Stock</h2>
-                <form id="pharmacyForm">
-                    <input type="hidden" id="medicationId">
-                    <label for="medicineName">Medicine Name:</label>
-                    <input type="text" id="medicineName" required placeholder="e.g., Paracetamol 500mg">
-                    <label for="stockQuantity">Stock Quantity:</label>
-                    <input type="number" id="stockQuantity" required placeholder="e.g., 500">
-                    <label for="pricePerUnit">Price Per Unit (LKR):</label>
-                    <input type="number" step="0.01" id="pricePerUnit" required placeholder="e.g., 3.50">
-                    <button type="submit">Save Stock Entry</button>
-                </form>
+
+    <div class="dashboard-layout">
+        
+        <aside class="form-sidebar">
+            <div class="brand">
+                <h2>MedSched</h2>
+                <p>Pharmacy Inventory Portal</p>
             </div>
 
-            <div class="inventory-list">
-                <h2>Current Pharmacy Stock Sheet</h2>
+            <div class="form-card">
+                <h3>Add / Adjust Medication Stock</h3>
+                <form id="pharmacyForm">
+                    <input type="hidden" id="medicationId">
+                    
+                    <div class="input-group">
+                        <label for="medicineName">Medicine Name:</label>
+                        <input type="text" id="medicineName" required placeholder="e.g., Paracetamol 500mg">
+                    </div>
+                    
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="stockQuantity">Stock Qty:</label>
+                            <input type="number" id="stockQuantity" required placeholder="e.g., 500">
+                        </div>
+                        <div class="input-group">
+                            <label for="pricePerUnit">Price (LKR):</label>
+                            <input type="number" step="0.01" id="pricePerUnit" required placeholder="e.g., 3.50">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Save Stock Entry</button>
+                </form>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header">
+                <h1>Current Pharmacy Stock Sheet</h1>
+                <p>Monitor, adjust, and update active medicine batches.</p>
+            </header>
+
+            <div class="table-container">
                 <table id="pharmacyTable">
                     <thead>
                         <tr>
@@ -35,13 +56,15 @@
                             <th>Medicine Name</th>
                             <th>Available Stock</th>
                             <th>Unit Price</th>
-                            <th>Actions</th>
+                            <th style="text-align: center;">Actions</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        </tbody>
                 </table>
             </div>
-        </div>
+        </main>
+
     </div>
 
     <script src="pharmacy.js"></script>
