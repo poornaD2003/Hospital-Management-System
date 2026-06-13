@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    <link rel="stylesheet" href="patient.css">
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Left Sidebar: Patient Info and Quick Actions -->
+        <aside class="form-sidebar">
+            <div class="brand">
+                <h2>MedSched</h2>
+                <p>Patient Portal</p>
+            </div>
+
+            <div class="form-card">
+                <h3>Patient Profile</h3>
+                <div class="patient-info">
+                    <div class="info-group">
+                        <label>Full Name</label>
+                        <p id="displayName">-</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Patient ID</label>
+                        <p id="displayPatientId">-</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Age</label>
+                        <p id="displayAge">-</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Phone</label>
+                        <p id="displayPhone">-</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Email</label>
+                        <p id="displayEmail">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <h3>Quick Actions</h3>
+                <button class="btn btn-action" onclick="showSection('appointments')">📅 My Appointments</button>
+                <button class="btn btn-action" onclick="showSection('medical-history')">📋 Medical History</button>
+                <button class="btn btn-action" onclick="showSection('notifications')">🔔 Notifications</button>
+                <button class="btn btn-action" onclick="showSection('billing')">💳 Billing</button>
+                <button class="btn btn-action" onclick="(function(){localStorage.removeItem('patient'); window.location.href='auth.html';})()">🔓 Logout</button>
+            </div>
+        </aside>
+
+        <!-- Right Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1 id="sectionTitle">My Appointments</h1>
+                <p id="sectionSubtitle">View and manage your appointments</p>
+            </header>
+
+            <!-- Appointments Section -->
+            <section id="appointmentsSection" class="content-section">
+                <div class="section-controls">
+                    <input type="text" id="appointmentSearch" placeholder="Search appointments..." class="search-box">
+                    <button class="btn btn-primary" onclick="viewAppointmentForm()">+ New Appointment</button>
+                </div>
+                <div id="appointmentGrid" class="appointment-grid"></div>
+            </section>
+
+            <!-- Medical History Section -->
+            <section id="medicalHistorySection" class="content-section" style="display: none;">
+                <div class="section-controls">
+                    <input type="text" id="historySearch" placeholder="Search medical records..." class="search-box">
+                </div>
+                <div id="medicalHistoryGrid" class="medical-grid"></div>
+            </section>
+
+            <!-- Notifications Section -->
+            <section id="notificationsSection" class="content-section" style="display: none;">
+                <div class="section-controls">
+                    <button class="btn btn-secondary" onclick="clearAllNotifications()">Clear All</button>
+                </div>
+                <div id="notificationsGrid" class="notifications-grid"></div>
+            </section>
+
+            <!-- Billing Section -->
+            <section id="billingSection" class="content-section" style="display: none;">
+                <div class="section-controls">
+                    <input type="text" id="billingSearch" placeholder="Search bills..." class="search-box">
+                </div>
+                <div id="billingGrid" class="billing-grid"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal for Appointment Details -->
+    <div id="appointmentModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Book Appointment</h2>
+            <form id="bookAppointmentForm">
+                <div class="input-group">
+                    <label for="doctorName">Doctor Name</label>
+                    <input type="text" id="doctorName" placeholder="e.g. Dr. Smith" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="specialization">Specialization</label>
+                    <select id="specialization" required>
+                        <option value="">-- Select Specialization --</option>
+                        <option value="Cardiology">Cardiology</option>
+                        <option value="Neurology">Neurology</option>
+                        <option value="Dermatology">Dermatology</option>
+                        <option value="Pediatrics">Pediatrics</option>
+                        <option value="General Medicine">General Medicine</option>
+                    </select>
+                </div>
+
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="appointmentDate">Date</label>
+                        <input type="date" id="appointmentDate" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="appointmentTime">Time</label>
+                        <input type="time" id="appointmentTime" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="reason">Reason for Visit</label>
+                    <textarea id="reason" placeholder="Describe your symptoms or reason for visit..." rows="4"></textarea>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">Book Appointment</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="patient.js"></script>
+</body>
+
+</html>
