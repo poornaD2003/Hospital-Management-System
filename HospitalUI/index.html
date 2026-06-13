@@ -11,7 +11,6 @@
 <body>
 
     <div class="dashboard-layout">
-        <!-- Left Sidebar: Form Control -->
         <aside class="form-sidebar">
             <div class="brand">
                 <h2>MedSched</h2>
@@ -24,8 +23,8 @@
                     <input type="hidden" id="appointmentId">
 
                     <div class="input-group">
-                        <label for="patientName">Patient Name</label>
-                        <input type="text" id="patientName" placeholder="e.g. John Doe" required>
+                        <label for="patientId">Patient ID</label>
+                        <input type="number" id="patientId" placeholder="e.g. 1" required>
                     </div>
 
                     <div class="input-group">
@@ -63,14 +62,12 @@
             </div>
         </aside>
 
-        <!-- Right Main Content: Appointments Grid -->
         <main class="main-content">
             <header class="content-header">
                 <h1>Active Appointments</h1>
                 <p id="appointmentCount">Loading schedule...</p>
             </header>
 
-            <!-- Dynamic Card Container replaces the old Table -->
             <div id="appointmentGrid" class="appointment-grid"></div>
         </main>
     </div>
