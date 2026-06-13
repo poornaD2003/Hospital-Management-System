@@ -16,8 +16,10 @@ public class Billing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "patient_id", nullable = false)
+    private Long patientId;
 
-    @Column(name = "patient_name", nullable = false)
+    @Transient
     private String patientName;
 
     @Column(name = "amount", nullable = false)
@@ -35,7 +37,7 @@ public class Billing {
     private List<BillingServiceItem> serviceItems;
 
     // Stores one-by-one added medications with their quantity and unit price
-    @ElementCollection
-    @CollectionTable(name = "billing_medicines", joinColumns = @JoinColumn(name = "billing_id"))
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "billing_id")
     private List<BillingMedicineItem> medicineItems;
 }
