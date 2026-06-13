@@ -21,7 +21,10 @@ public class Appointment {
 
     private Long id;
 
-    @Column(name = "patient_name", nullable = false)
+    @Column(name = "patient_id", nullable = false)
+    private Long patientId; // String name එක වෙනුවට Long ID එකක් දැම්මා
+
+    @Transient // මේකෙන් කියන්නේ මේ field එක ඩේටාබේස් එකේ සේව් වෙන්න එපා කියලා
     private String patientName;
 
     @Column(name = "doctor_name", nullable = false)
