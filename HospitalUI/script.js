@@ -22,8 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 data.forEach((appointment) => {
-                    // Extract initials for a profile design item
-                    const initials = appointment.patientName ? appointment.patientName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0,2) : "P";
+                    // 💡 වෙනස් කළා: patientName එකක් නැත්නම් 'Patient ' + ID එක පෙන්වන්න (නැතහොත් Initials ගන්න)
+                    const displayName = appointment.patientName ? appointment.patientName : `Patient #${appointment.patientId}`;
+                    const initials = appointment.patientName ? appointment.patientName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0,2) : "PT";
                     
                     const card = document.createElement("div");
                     card.className = "appointment-card";
@@ -34,10 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <span class="appointment-id">#${appointment.id}</span>
                             </div>
                             <div class="card-body">
-                                <h4>${appointment.patientName}</h4>
-                                <div class="doc-name">
+                                <h4>${displayName}</h4> <div class="doc-name">
                                     with ${appointment.doctorName} 
-                                    <!-- Embedded Specialization pill text -->
                                     <span style="font-size: 0.75rem; background: var(--secondary); padding: 2px 6px; border-radius: 4px; margin-left: 4px;">
                                         ${appointment.specialization || 'General'}
                                     </span>
@@ -66,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         const id = document.getElementById("appointmentId").value;
-        const patientName = document.getElementById("patientName").value;
+        const patientId = document.getElementById("patientId").value;
         const doctorName = document.getElementById("doctorName").value;
         const specialization = document.getElementById("specialization").value; 
         const appointmentDate = document.getElementById("appointmentDate").value;
@@ -81,17 +80,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                patientName,
+                patientId: parseInt(patientId), // 💡 integer එකක් විදිහට යවන්න සකස් කළා
                 doctorName,
                 specialization,
                 appointmentDate,
                 appointmentTime
             })
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Validation failed or Patient not found");
+            }
+            return response.json();
+        })
         .then(() => {
             resetForm();
             fetchAppointments();
+        })
+        .catch(err => {
+            alert("Error: Patient කෙනෙකු හමුනොවුණි හෝ Patient Service එක ක්‍රියා විරහිතයි.");
+            console.error(err);
         });
     });
 
@@ -100,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(response => response.json())
             .then((appointment) => {
                 document.getElementById("appointmentId").value = appointment.id;
-                document.getElementById("patientName").value = appointment.patientName;
+                document.getElementById("patientId").value = appointment.patientId; // 💡 පරණ patientName වෙනුවට patientId එක ෆෝම් එකට සෙට් කළා
                 document.getElementById("doctorName").value = appointment.doctorName;
                 document.getElementById("specialization").value = appointment.specialization || "";
                 document.getElementById("appointmentDate").value = appointment.appointmentDate;
