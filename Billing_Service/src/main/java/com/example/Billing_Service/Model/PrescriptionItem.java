@@ -10,7 +10,7 @@ public class PrescriptionItem {
     private Long id;
 
     @Column(name = "medicine_id")
-    private Long medicineId; // Foreign key referencing medications.id in the other DB
+    private Long medicineId;
 
     private int quantity;
 

@@ -1,15 +1,18 @@
 package com.example.Billing_Service.Service.Impl;
 
+import com.example.Billing_Service.Client.PatientClient;
+import com.example.Billing_Service.Client.PharmacyClient;
+import com.example.Billing_Service.DTO.MedicationDTO;
+import com.example.Billing_Service.DTO.PatientDTO;
 import com.example.Billing_Service.Model.Billing;
-import com.example.Billing_Service.Model.BillingServiceItem;
 import com.example.Billing_Service.Model.BillingMedicineItem;
+import com.example.Billing_Service.Model.BillingServiceItem;
 import com.example.Billing_Service.Repository.BillingRepository;
 import com.example.Billing_Service.Service.BillingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BillingServiceImpl implements BillingService {
@@ -17,28 +20,76 @@ public class BillingServiceImpl implements BillingService {
     @Autowired
     private BillingRepository billingRepository;
 
+    @Autowired
+    private PatientClient patientClient;
+
+    @Autowired
+    private PharmacyClient pharmacyClient;
+
     @Override
     public Billing saveBilling(Billing billing) {
-        // Calculate the total fee before saving to the database
-        double calculatedTotal = calculateGrandTotal(billing);
-        billing.setAmount(calculatedTotal);
+        double totalAmount = calculateGrandTotal(billing);
+        billing.setAmount(totalAmount);
 
         return billingRepository.save(billing);
     }
 
     @Override
     public List<Billing> getAllBilling() {
-        return billingRepository.findAll();
+        List<Billing> billings = billingRepository.findAll();
+        for (Billing b : billings) {
+            try {
+                if (b.getPatientId() != null) {
+                    PatientDTO p = patientClient.getPatientById(b.getPatientId());
+                    b.setPatientName(p.getName());
+                }
+            } catch (Exception e) {
+                b.setPatientName("Unknown Patient");
+            }
+
+            if (b.getMedicineItems() != null) {
+                for (BillingMedicineItem item : b.getMedicineItems()) {
+                    try {
+                        MedicationDTO med = pharmacyClient.getMedicationById(item.getMedicineId());
+                        if (med != null) {
+                            item.setMedicineName(med.getMedicineName());
+                        }
+                    } catch (Exception e) {
+                        item.setMedicineName("Unknown Medicine");
+                    }
+                }
+            }
+        }
+        return billings;
     }
 
     @Override
     public Billing getBillingById(long id) {
-        Optional<Billing> billing = billingRepository.findById(id);
-        if (billing.isPresent()) {
-            return billing.get();
-        } else {
-            throw new RuntimeException("Billing record not found with ID: " + id);
+        Billing b = billingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Billing record not found with ID: " + id));
+
+        try {
+            if (b.getPatientId() != null) {
+                PatientDTO p = patientClient.getPatientById(b.getPatientId());
+                b.setPatientName(p.getName());
+            }
+        } catch (Exception e) {
+            b.setPatientName("Unknown Patient");
         }
+
+        if (b.getMedicineItems() != null) {
+            for (BillingMedicineItem item : b.getMedicineItems()) {
+                try {
+                    MedicationDTO med = pharmacyClient.getMedicationById(item.getMedicineId());
+                    if (med != null) {
+                        item.setMedicineName(med.getMedicineName());
+                    }
+                } catch (Exception e) {
+                    item.setMedicineName("Unknown Medicine");
+                }
+            }
+        }
+        return b;
     }
 
     @Override
@@ -46,16 +97,25 @@ public class BillingServiceImpl implements BillingService {
         Billing existingBilling = billingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Billing record not found with ID: " + id));
 
-        // Update core info fields
-        existingBilling.setPatientName(billing.getPatientName());
+        existingBilling.setPatientId(billing.getPatientId());
         existingBilling.setPaymentMethod(billing.getPaymentMethod());
         existingBilling.setPaymentStatus(billing.getPaymentStatus());
 
-        // Replace items lists
-        existingBilling.setServiceItems(billing.getServiceItems());
-        existingBilling.setMedicineItems(billing.getMedicineItems());
+        if (existingBilling.getServiceItems() != null) {
+            existingBilling.getServiceItems().clear();
+            if (billing.getServiceItems() != null) {
+                existingBilling.getServiceItems().addAll(billing.getServiceItems());
+            }
+        }
 
-        // Recalculate totals
+
+        if (existingBilling.getMedicineItems() != null) {
+            existingBilling.getMedicineItems().clear();
+            if (billing.getMedicineItems() != null) {
+                existingBilling.getMedicineItems().addAll(billing.getMedicineItems());
+            }
+        }
+
         double recalculatedTotal = calculateGrandTotal(existingBilling);
         existingBilling.setAmount(recalculatedTotal);
 
@@ -69,31 +129,42 @@ public class BillingServiceImpl implements BillingService {
         billingRepository.deleteById(id);
     }
 
-    /**
-     * Logic: Sum of Service Fees + Sum of (Medicine Unit Price * Quantity)
-     */
+
     private double calculateGrandTotal(Billing billing) {
-        double totalServiceFee = 0.0;
-        double totalMedicineCost = 0.0;
+        double totalAmount = 0.0;
 
-        // 1. Calculate services fee sum
         if (billing.getServiceItems() != null) {
-            for (BillingServiceItem service : billing.getServiceItems()) {
-                if (service.getServiceFee() != null) { // 👈 Null Check
-                    totalServiceFee += service.getServiceFee();
+            for (BillingServiceItem item : billing.getServiceItems()) {
+                if (item.getServiceFee() != null) {
+                    totalAmount += item.getServiceFee();
                 }
             }
         }
 
-        // 2. Calculate medicine cost: unit price * quantity
         if (billing.getMedicineItems() != null) {
-            for (BillingMedicineItem medicine : billing.getMedicineItems()) {
-                if (medicine.getUnitPrice() != null) { // 👈 Null Check
-                    totalMedicineCost += (medicine.getUnitPrice() * medicine.getQuantity());
+            for (BillingMedicineItem item : billing.getMedicineItems()) {
+                try {
+                    MedicationDTO med = pharmacyClient.getMedicationById(item.getMedicineId());
+
+                    if (med != null) {
+                        item.setMedicineName(med.getMedicineName());
+                        item.setUnitPrice(med.getPricePerUnit());
+
+                        totalAmount += (med.getPricePerUnit() * item.getQuantity());
+                    } else {
+                        System.out.println("⚠️ Medicine NOT FOUND in Pharmacy for ID: " + item.getMedicineId());
+                    }
+                } catch (Exception e) {
+                    System.err.println("❌ Feign Client Error for Medicine ID " + item.getMedicineId() + ": " + e.getMessage());
+                    e.printStackTrace();
+
+                    if (item.getUnitPrice() != null) {
+                        totalAmount += (item.getUnitPrice() * item.getQuantity());
+                    }
                 }
             }
         }
 
-        return totalServiceFee + totalMedicineCost;
+        return totalAmount;
     }
 }

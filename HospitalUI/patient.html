@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Registration</title>
+    <link rel="stylesheet" href="patient.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <aside class="form-sidebar">
+            <div class="brand">
+                <h2>Patient Portal</h2>
+                <p>Register and manage patients</p>
+            </div>
+            <div class="form-card">
+                <h3>Patient Registration</h3>
+                <form id="registerForm">
+                    <div class="input-group">
+                        <label for="regName">Full Name</label>
+                        <input id="regName" type="text" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="regEmail">Email</label>
+                        <input id="regEmail" type="email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="regPassword">Password</label>
+                        <input id="regPassword" type="password" required>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="regPhone">Phone</label>
+                            <input id="regPhone" type="text">
+                        </div>
+                        <div class="input-group">
+                            <label for="regAge">Age</label>
+                            <input id="regAge" type="number" min="0">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </form>
+            </div>
+        </aside>
+        <main class="main-content">
+            <div class="card">
+                <h2>Registered Patients</h2>
+                <table id="patientsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Age</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patientTable"></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    <script src="patient.js"></script>
+</body>
+</html>

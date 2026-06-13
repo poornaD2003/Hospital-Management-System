@@ -70,8 +70,8 @@
                     <input type="hidden" id="billingId">
 
                     <div class="input-group">
-                        <label for="patientName">Patient Name</label>
-                        <input type="text" id="patientName" placeholder="e.g. John Doe" required>
+                        <label for="patientId">Patient ID</label>
+                        <input type="number" id="patientId" placeholder="e.g. 1" required>
                     </div>
 
                     <div class="section-title">Hospital Services</div>
@@ -90,11 +90,9 @@
                         <div class="input-group" style="flex: 1; margin-bottom: 0;">
                             <label for="serviceFeeInput">Fee</label>
                             <input type="number" id="serviceFeeInput" placeholder="Rs.">
-
                         </div>
-                        <div class="input-group" style="flex:1 ;margin-bottom:0;">
-                            <button type="button" id="addServiceBtn" class="btn btn-secondary" style="padding: 10px;">+
-                                Add</button>
+                        <div class="input-group" style="flex: 1; margin-bottom: 0;">
+                            <button type="button" id="addServiceBtn" class="btn btn-secondary" style="padding: 10px; width: 100%;">+ Add</button>
                         </div>
                     </div>
 
@@ -103,22 +101,16 @@
                     <div class="section-title">Pharmacy Medications</div>
                     <div class="dynamic-row">
                         <div class="input-group" style="flex: 2; margin-bottom: 0;">
-                            <label for="medicineNameInput">Medicine Name</label>
-                            <input type="text" id="medicineNameInput" placeholder="e.g. Panadol">
-                        </div>
-                        <div class="input-group" style="flex: 1; margin-bottom: 0;">
-                            <label for="medPriceInput">Unit Price</label>
-                            <input type="number" id="medPriceInput" placeholder="Rs.">
+                            <label for="medicineIdInput">Medicine ID</label>
+                            <input type="number" id="medicineIdInput" placeholder="e.g. 101">
                         </div>
                         <div class="input-group" style="flex: 1; margin-bottom: 0;">
                             <label for="medQtyInput">Qty</label>
                             <input type="number" id="medQtyInput" value="1" min="1">
                         </div>
-                        <div class="input-group" style="flex:1 ;margin-bottom:0;">
-                            <button type="button" id="addMedicineBtn" class="btn btn-secondary" style="padding: 10px;">+
-                            Add</button>
+                        <div class="input-group" style="flex: 1; margin-bottom: 0;">
+                            <button type="button" id="addMedicineBtn" class="btn btn-secondary" style="padding: 10px; width: 100%;">+ Add</button>
                         </div>
-                        
                     </div>
                     <div id="medicinesList" class="dynamic-list"></div>
 

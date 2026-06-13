@@ -21,7 +21,10 @@ public class Appointment {
 
     private Long id;
 
-    @Column(name = "patient_name", nullable = false)
+    @Column(name = "patient_id", nullable = false)
+    private Long patientId;
+
+    @Transient
     private String patientName;
 
     @Column(name = "doctor_name", nullable = false)

@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let addedServices = [];
     let addedMedicines = [];
 
+    // 💡 Port updated to 8082 and path changed to /api/billings for Billing Microservice
     const apiBaseUrl = "http://localhost:8080/api/billing";
 
     // --- Dynamic Item Addition Operations ---
@@ -26,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         addedServices.push({
             serviceName: nameSelect.value,
-            serviceFee: parseFloat(feeInput.value)
+            serviceFee: parseFloat(feeInput.value) // 💡 Backend model එකේ නම serviceCost නිසා වෙනස් කළා
         });
 
         nameSelect.value = "";
@@ -36,23 +37,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Add Medicine to local list
     document.getElementById("addMedicineBtn").addEventListener("click", () => {
-        const nameInput = document.getElementById("medicineNameInput");
-        const priceInput = document.getElementById("medPriceInput");
+        const idInput = document.getElementById("medicineIdInput") || document.getElementById("medicineNameInput"); // HTML එකේ ID එක
         const qtyInput = document.getElementById("medQtyInput");
 
-        if (!nameInput.value || !priceInput.value || !qtyInput.value) {
-            alert("Please completely provide medicine name, unit price, and quantity.");
+        if (!idInput.value || !qtyInput.value) {
+            alert("Please provide both Medicine ID and Quantity.");
             return;
         }
 
+        // 💡 Microservice සංකල්පයට අනුව යවන්නේ medicineId විතරයි. Name/Price Backend එකෙන් බලාගනී.
         addedMedicines.push({
-            medicineName: nameInput.value,
-            unitPrice: parseFloat(priceInput.value),
+            medicineId: parseInt(idInput.value),
             quantity: parseInt(qtyInput.value)
         });
 
-        nameInput.value = "";
-        priceInput.value = "";
+        idInput.value = "";
         qtyInput.value = "1";
         renderItemsLists();
     });
@@ -73,9 +72,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         medicinesContainer.innerHTML = addedMedicines.length === 0 ? '<span style="font-size:12px; color:#9ca3af;">No medicines added yet.</span>' : '';
         addedMedicines.forEach((med, index) => {
+            // Edit කරද්දී backend එකෙන් නම එවුවොත් පෙන්වන්න, නැත්නම් ID එක පෙන්වන්න
+            const displayName = med.medicineName ? med.medicineName : `Medicine ID: ${med.medicineId}`;
+            const displayPrice = med.unitPrice ? ` (Rs.${med.unitPrice} × ${med.quantity})` : ` (Qty: ${med.quantity})`;
+            
             medicinesContainer.innerHTML += `
                 <div class="item-tag" style="background:#fef08a; color:#854d0e;">
-                    <span>${med.medicineName} (Rs.${med.unitPrice} × ${med.quantity})</span>
+                    <span>${displayName}${displayPrice}</span>
                     <span class="remove-btn" onclick="removeMedicineItem(${index})">×</span>
                 </div>`;
         });
@@ -117,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <span class="billing-id">Invoice #${billing.id}</span>
                                 <span class="badge ${statusClass}">${billing.paymentStatus}</span>
                             </div>
-                            <h4 style="margin: 5px 0;">${billing.patientName}</h4>
+                            <h4 style="margin: 5px 0;">${billing.patientName} <small style="font-size:10px; color:gray;">(ID: ${billing.patientId})</small></h4>
                             <p style="font-size: 12px; color:gray; margin: 4px 0;">Paid via: <b>${billing.paymentMethod}</b></p>
                             
                             <div style="font-size: 13px; background: #f3f4f6; padding: 6px; border-radius:4px; margin-top:8px;">
@@ -132,7 +135,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     `;
                     billingGrid.appendChild(card);
                 });
-            });
+            })
+            .catch(err => console.error("Error fetching billings:", err));
     }
 
     // Handle Form Submission Save Operation (POST or PUT)
@@ -140,13 +144,18 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         const id = document.getElementById("billingId").value;
-        const patientName = document.getElementById("patientName").value;
+        const patientIdInput = document.getElementById("patientId") || document.getElementById("patientName"); // HTML එකේ තියෙන input එක
         const paymentMethod = document.getElementById("paymentMethod").value;
         const paymentStatus = document.getElementById("paymentStatus").value;
 
-        // Structured JSON body layout to sync up to modern backend model requirements
+        if (!patientIdInput.value) {
+            alert("Please enter a valid Patient ID");
+            return;
+        }
+
+        // 💡 Payload structure updated to match Backend entity
         const payload = {
-            patientName: patientName,
+            patientId: parseInt(patientIdInput.value), // 💡 patientName වෙනුවට patientId යවයි
             paymentMethod: paymentMethod,
             paymentStatus: paymentStatus,
             serviceItems: addedServices,
@@ -178,7 +187,10 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(response => response.json())
             .then((billing) => {
                 document.getElementById("billingId").value = billing.id;
-                document.getElementById("patientName").value = billing.patientName;
+                
+                const patientIdInput = document.getElementById("patientId") || document.getElementById("patientName");
+                patientIdInput.value = billing.patientId; // ID එක පිරවීම
+                
                 document.getElementById("paymentMethod").value = billing.paymentMethod;
                 document.getElementById("paymentStatus").value = billing.paymentStatus;
                 
@@ -190,13 +202,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 formTitle.textContent = "Update Invoice";
                 submitBtn.textContent = "Apply Changes";
                 cancelBtn.style.display = "block";
-            });
+            })
+            .catch(err => console.error("Error fetching bill detail:", err));
     };
 
     window.deleteBilling = function(id) {
         if (confirm("Are you certain you want to erase this transaction record?")) {
             fetch(`${apiBaseUrl}/${id}`, { method: "DELETE" })
-            .then(() => fetchBilling());
+            .then(() => fetchBilling())
+            .catch(err => console.error("Error deleting bill:", err));
         }
     };
 
