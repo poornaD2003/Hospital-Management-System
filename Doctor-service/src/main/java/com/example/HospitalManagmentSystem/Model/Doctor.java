@@ -21,7 +21,6 @@ public class Doctor {
     private String phone;
     private String status = "Active";
 
-    // --- Constructor ---
     public Doctor() {}
 
     public Doctor(String name, String specialization, String licenseNumber, String email, String phone) {
@@ -32,7 +31,6 @@ public class Doctor {
         this.phone = phone;
     }
 
-    // --- Getters and Setters ---
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

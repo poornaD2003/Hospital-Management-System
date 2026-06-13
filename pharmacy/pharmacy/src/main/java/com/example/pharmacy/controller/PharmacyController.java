@@ -15,7 +15,7 @@ import java.util.List;
 public class PharmacyController {
 
     @Autowired
-    private MedicationService medicationService; // 💡 Repository වෙනුවට Service එක Inject කළා
+    private MedicationService medicationService;
 
     @PostMapping
     public ResponseEntity<Medication> addMedication(@RequestBody Medication medication) {

@@ -1,5 +1,6 @@
 package com.sms.patient.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Patient register(Patient patient) {
-        // hash password before saving
         if (patient.getPassword() != null) {
             patient.setPassword(passwordEncoder.encode(patient.getPassword()));
         }
@@ -43,7 +43,33 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Optional<Patient> findByEmail(String email) {
-        return patientRepository.findByEmail(email);
+    public List<Patient> findAll() {
+        return patientRepository.findAll();
     }
+
+    @Override
+    public void deleteById(Long id) {
+        patientRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return patientRepository.existsById(id);
+    }
+
+    @Override
+    public Optional<Patient> update(Long id, Patient patient) {
+        return patientRepository.findById(id).map(existingPatient -> {
+            existingPatient.setName(patient.getName());
+            existingPatient.setEmail(patient.getEmail());
+            if(patient.getPassword() != null && !patient.getPassword().isEmpty()) {
+                existingPatient.setPassword(passwordEncoder.encode(patient.getPassword()));
+            }
+            existingPatient.setAge(patient.getAge());
+            existingPatient.setPhone(patient.getPhone());
+            return patientRepository.save(existingPatient);
+        });
+    }
+
+
 }

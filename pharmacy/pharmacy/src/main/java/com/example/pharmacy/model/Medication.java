@@ -19,10 +19,8 @@ public class Medication {
     @Column(name = "price_per_unit", nullable = false)
     private double pricePerUnit;
 
-    // Default Constructor
     public Medication() {}
 
-    // Full Constructor
     public Medication(Long id, String medicineName, int stockQuantity, double pricePerUnit) {
         this.id = id;
         this.medicineName = medicineName;
@@ -30,7 +28,6 @@ public class Medication {
         this.pricePerUnit = pricePerUnit;
     }
 
-    // Explicit Getters and Setters (මෙමඟින් වැරැද්ද සම්පූර්ණයෙන්ම නිවැරදි වේ)
     public Long getId() {
         return id;
     }

@@ -17,12 +17,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     private AppointmentRepository appointmentRepository;
 
     @Autowired
-    private PatientClient patientClient; // Feign Client
+    private PatientClient patientClient;
 
     @Override
     public Appointment saveAppointment(Appointment appointment) {
         try {
-            // Patient කෙනෙක් ඉන්නවද බලනවා
             patientDTO patient = patientClient.getPatientById(appointment.getPatientId());
             if (patient == null) {
                 throw new RuntimeException("Patient not found!");
@@ -38,7 +37,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<Appointment> appointments = appointmentRepository.findAll();
         for (Appointment app : appointments) {
             try {
-                // හැම appointment එකකටම Patient Service එකෙන් නම අරන් සෙට් කරනවා
                 patientDTO p = patientClient.getPatientById(app.getPatientId());
                 app.setPatientName(p.getName());
             } catch (Exception e) {
@@ -49,7 +47,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public Appointment getAppointmentById(long id) {
+    public Appointment getAppointmentById(Long id) {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
         try {
@@ -66,7 +64,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment existingAppointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
 
-        // 💡 මෙතන පරණ සෙට් එක වෙනස් කළා patientId එකට
         existingAppointment.setPatientId(appointment.getPatientId());
         existingAppointment.setDoctorName(appointment.getDoctorName());
         existingAppointment.setSpecialization(appointment.getSpecialization());

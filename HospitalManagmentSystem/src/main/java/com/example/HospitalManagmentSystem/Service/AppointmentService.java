@@ -11,7 +11,7 @@ public interface AppointmentService {
 
     List<Appointment> getAllAppointments();
 
-    Appointment getAppointmentById(long id);
+    Appointment getAppointmentById(Long id);
 
     Appointment updateAppointment(Appointment appointment, long id);
 

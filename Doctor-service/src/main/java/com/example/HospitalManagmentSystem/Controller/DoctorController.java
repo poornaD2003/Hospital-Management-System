@@ -18,20 +18,17 @@ public class DoctorController {
     @Autowired
     private DoctorRepository doctorRepository;
 
-    // 1. POST Method: Register a new doctor
     @PostMapping
     public ResponseEntity<Doctor> saveDoctor(@RequestBody Doctor doctor) {
         Doctor savedDoctor = doctorRepository.save(doctor);
         return new ResponseEntity<>(savedDoctor, HttpStatus.CREATED);
     }
 
-    // 2. GET Method: Retrieve all doctors
     @GetMapping
     public List<Doctor> getAllDoctors() {
         return doctorRepository.findAll();
     }
 
-    // 3. GET Method: Retrieve a specific doctor by ID
     @GetMapping("/{id}")
     public ResponseEntity<Doctor> getDoctorById(@PathVariable Long id) {
         Optional<Doctor> doctor = doctorRepository.findById(id);
@@ -39,7 +36,6 @@ public class DoctorController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    // 4. DELETE Method: Remove a doctor profile
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteDoctor(@PathVariable Long id) {
         try {

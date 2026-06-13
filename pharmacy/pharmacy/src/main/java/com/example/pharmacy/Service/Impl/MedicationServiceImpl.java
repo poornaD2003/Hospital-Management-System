@@ -14,7 +14,7 @@ import java.util.Optional;
 public class MedicationServiceImpl implements MedicationService {
 
     @Autowired
-    private PharmacyRepository pharmacyRepository; // ඔයාගේ පරණ Repository එක Inject කළා
+    private PharmacyRepository pharmacyRepository;
 
     @Override
     public Medication saveMedication(Medication medication) {
@@ -52,16 +52,13 @@ public class MedicationServiceImpl implements MedicationService {
     @Override
     @Transactional
     public Medication issueMedication(Long medicineId, int quantityIssued) {
-        // 1. බෙහෙත ඩේටාබේස් එකේ තියෙනවද බලනවා
         Medication medication = pharmacyRepository.findById(medicineId)
                 .orElseThrow(() -> new RuntimeException("Error: Selected Medicine ID does not exist!"));
 
-        // 2. ඉල්ලන ප්‍රමාණයට වඩා ස්ටොක් තියෙනවද බලනවා
         if (medication.getStockQuantity() < quantityIssued) {
             throw new RuntimeException("Error: Insufficient stock! Only " + medication.getStockQuantity() + " units left.");
         }
 
-        // 3. ස්ටොක් අඩු කරලා සේව් කරනවා
         int newStock = medication.getStockQuantity() - quantityIssued;
         medication.setStockQuantity(newStock);
         return pharmacyRepository.save(medication);
