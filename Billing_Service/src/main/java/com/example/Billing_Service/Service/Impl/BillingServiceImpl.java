@@ -28,7 +28,6 @@ public class BillingServiceImpl implements BillingService {
 
     @Override
     public Billing saveBilling(Billing billing) {
-        // ඩේටාබේස් එකට දාන්න කලින් මිල ගණන් සහ නම් Feign Client එකෙන් අරන් Grand Total එක හදනවා
         double totalAmount = calculateGrandTotal(billing);
         billing.setAmount(totalAmount);
 
@@ -36,10 +35,9 @@ public class BillingServiceImpl implements BillingService {
     }
 
     @Override
-    public List<Billing> getAllBilling() { // Interface එකේ නමට අනුව getAllBillings ලෙස තැබුවා
+    public List<Billing> getAllBilling() {
         List<Billing> billings = billingRepository.findAll();
         for (Billing b : billings) {
-            // Patient Service එකෙන් නම අරන් Dynamic සෙට් කරනවා
             try {
                 if (b.getPatientId() != null) {
                     PatientDTO p = patientClient.getPatientById(b.getPatientId());
@@ -49,7 +47,6 @@ public class BillingServiceImpl implements BillingService {
                 b.setPatientName("Unknown Patient");
             }
 
-            // බෙහෙත් වල නම් ටිකත් Pharmacy එකෙන් අරන් Dynamic සෙට් කරනවා
             if (b.getMedicineItems() != null) {
                 for (BillingMedicineItem item : b.getMedicineItems()) {
                     try {
@@ -71,7 +68,6 @@ public class BillingServiceImpl implements BillingService {
         Billing b = billingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Billing record not found with ID: " + id));
 
-        // තනි රෙකෝඩ් එකක් ගනිද්දීත් Patient Name එක Fetch කරනවා
         try {
             if (b.getPatientId() != null) {
                 PatientDTO p = patientClient.getPatientById(b.getPatientId());
@@ -81,7 +77,6 @@ public class BillingServiceImpl implements BillingService {
             b.setPatientName("Unknown Patient");
         }
 
-        // බෙහෙත් වල විස්තර Fetch කරනවා
         if (b.getMedicineItems() != null) {
             for (BillingMedicineItem item : b.getMedicineItems()) {
                 try {
@@ -102,12 +97,10 @@ public class BillingServiceImpl implements BillingService {
         Billing existingBilling = billingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Billing record not found with ID: " + id));
 
-        // මූලික විස්තර ටික අප්ඩේට් කරනවා
         existingBilling.setPatientId(billing.getPatientId());
         existingBilling.setPaymentMethod(billing.getPaymentMethod());
         existingBilling.setPaymentStatus(billing.getPaymentStatus());
 
-        // 1. Hospital Services ලිස්ට් එක ආරක්ෂිතව අප්ඩේට් කිරීම
         if (existingBilling.getServiceItems() != null) {
             existingBilling.getServiceItems().clear();
             if (billing.getServiceItems() != null) {
@@ -115,8 +108,7 @@ public class BillingServiceImpl implements BillingService {
             }
         }
 
-        // 2. 💡 වැදගත්ම කොටස: OneToMany ලිස්ට් එක කෙලින්ම set කරන්නේ නැතුව,
-        // පරණ ලිස්ට් එක clear කරලා අලුත් දත්ත ටික add කරනවා. (මෙවිට Hibernate Error එක එන්නේ නැත)
+
         if (existingBilling.getMedicineItems() != null) {
             existingBilling.getMedicineItems().clear();
             if (billing.getMedicineItems() != null) {
@@ -124,7 +116,6 @@ public class BillingServiceImpl implements BillingService {
             }
         }
 
-        // අලුත් අයිතමයන්ට අනුව මිල ගණන් සහ Grand Total එක නැවත ගණනය කරනවා
         double recalculatedTotal = calculateGrandTotal(existingBilling);
         existingBilling.setAmount(recalculatedTotal);
 
@@ -138,13 +129,10 @@ public class BillingServiceImpl implements BillingService {
         billingRepository.deleteById(id);
     }
 
-    /**
-     * Helper Method: වෛද්‍ය සේවා ගාස්තු + Pharmacy එකෙන් ගන්නා බෙහෙත් වල (මිල * ප්‍රමාණය)
-     */
+
     private double calculateGrandTotal(Billing billing) {
         double totalAmount = 0.0;
 
-        // 1. Hospital Services එකතුව බලමු
         if (billing.getServiceItems() != null) {
             for (BillingServiceItem item : billing.getServiceItems()) {
                 if (item.getServiceFee() != null) {
@@ -153,15 +141,12 @@ public class BillingServiceImpl implements BillingService {
             }
         }
 
-        // 2. Pharmacy සර්විස් එකෙන් දත්ත ගෙන ලිස්ට් එකට දමා සේව් කරමු
         if (billing.getMedicineItems() != null) {
             for (BillingMedicineItem item : billing.getMedicineItems()) {
                 try {
-                    // Pharmacy Service එකට කතා කරනවා
                     MedicationDTO med = pharmacyClient.getMedicationById(item.getMedicineId());
 
                     if (med != null) {
-                        // 💡 ලැබෙන සැබෑ දත්ත ටික Database එකට යන Object එකටම සෙට් කරනවා
                         item.setMedicineName(med.getMedicineName());
                         item.setUnitPrice(med.getPricePerUnit());
 
@@ -170,11 +155,9 @@ public class BillingServiceImpl implements BillingService {
                         System.out.println("⚠️ Medicine NOT FOUND in Pharmacy for ID: " + item.getMedicineId());
                     }
                 } catch (Exception e) {
-                    // 💡 වැරැද්දක් ආවොත් console එකේ බලාගන්න මේක දැම්මා
                     System.err.println("❌ Feign Client Error for Medicine ID " + item.getMedicineId() + ": " + e.getMessage());
                     e.printStackTrace();
 
-                    // සර්විස් එක ඩවුන් නම්, දැනට ෆ්‍රන්ට්එන්ඩ් එකෙන් ආපු මිලක් තිබේ නම් එයින් හදයි
                     if (item.getUnitPrice() != null) {
                         totalAmount += (item.getUnitPrice() * item.getQuantity());
                     }

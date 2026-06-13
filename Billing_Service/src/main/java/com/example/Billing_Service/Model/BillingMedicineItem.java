@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity // 💡 Embeddable වෙනුවට Entity එකක් කළා
+@Entity
 @Table(name = "billing_medicines")
 @Data
 @NoArgsConstructor
@@ -14,7 +14,7 @@ public class BillingMedicineItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Primary key එකක් එකතු කළා
+    private Long id;
 
     @Column(name = "medicine_id", nullable = false)
     private Long medicineId;
