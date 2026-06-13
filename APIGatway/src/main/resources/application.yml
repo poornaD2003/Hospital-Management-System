@@ -30,3 +30,9 @@ spring:
           uri: http://localhost:8084
           predicates:
             - Path=/api/doctors/**
+
+        # 5. patient Service Route
+        - id: patient-service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/patients/**
