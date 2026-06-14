@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const apiBaseUrl = "http://localhost:8080/api/pharmacy";
 
-    // FETCH AND DISPLAY CURRENT STOCK SHEET
     function fetchInventory() {
         fetch(apiBaseUrl)
             .then(response => response.json())
@@ -27,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // HANDLER FOR INVENTORY STOCK SUBMISSIONS
     pharmacyForm.addEventListener("submit", (e) => {
         e.preventDefault();
         const id = document.getElementById("medicationId").value;
@@ -58,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // NEW HANDLER FOR DISPENSING MEDICINE & PRINTING RECEIPTS
     if (issueForm) { 
     issueForm.addEventListener("submit", (e) => {
         e.preventDefault();
