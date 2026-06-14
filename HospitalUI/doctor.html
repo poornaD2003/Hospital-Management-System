@@ -3,187 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Management System</title>
+    <title>Admin Dashboard - Doctor Management</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container {
-            width: 100%;
-            max-width: 600px;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
-        h2 { color: #2d8a5e; margin-top: 0; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
-        input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #dce7e1;
-            border-radius: 6px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #2d8a5e;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-        }
-        button:hover { background-color: #226b48; }
-        .doctor-card {
-            background: #fff;
-            border-left: 5px solid #2d8a5e;
-            padding: 15px;
-            margin-top: 10px;
-            border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .delete-btn {
-            background-color: #d94141;
-            width: auto;
-            padding: 5px 10px;
-            font-size: 14px;
-        }
-        .delete-btn:hover { background-color: #b83232; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #f4f6f9; color: #333; padding: 30px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { margin-bottom: 30px; border-bottom: 2px solid #e0e0e0; padding-bottom: 15px; }
+        h1 { color: #2c3e50; font-size: 28px; }
+        .admin-badge { background: #3498db; color: white; padding: 4px 8px; font-size: 12px; border-radius: 4px; vertical-align: middle; }
+        
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .card-title { font-size: 18px; margin-bottom: 20px; color: #34495e; font-weight: 600; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        label { font-size: 14px; margin-bottom: 8px; color: #666; font-weight: 500; }
+        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; outline: none; transition: border 0.2s; }
+        input:focus, select:focus { border-color: #3498db; }
+        
+        .btn-container { margin-top: 20px; display: flex; gap: 10px; }
+        button { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 14px; transition: background 0.2s; }
+        .btn-primary { background-color: #2ecc71; color: white; }
+        .btn-primary:hover { background-color: #27ae60; }
+        .btn-cancel { background-color: #95a5a6; color: white; display: none; }
+        
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #f8f9fa; color: #666; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+        tr:hover { background-color: #fcfcfc; }
+        
+        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .status-active { background: #e8f8f0; color: #2ecc71; }
+        .status-leave { background: #fef5e7; color: #f39c12; }
+        
+        .actions { display: flex; gap: 10px; }
+        .btn-edit { background: #3498db; color: white; padding: 6px 12px; font-size: 13px; border-radius: 4px; }
+        .btn-edit:hover { background: #2980b9; }
+        .btn-delete { background: #e74c3c; color: white; padding: 6px 12px; font-size: 13px; border-radius: 4px; }
+        .btn-delete:hover { background: #c0392b; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Add New Doctor</h2>
-    <div class="form-group">
-        <label>Doctor Name:</label>
-        <input type="text" id="docName" placeholder="e.g., Dr. Perera">
-    </div>
-    <div class="form-group">
-        <label>Specialization:</label>
-        <input type="text" id="docSpec" placeholder="e.g., Cardiology">
-    </div>
-    <div class="form-group">
-        <label>License Number:</label>
-        <input type="text" id="docLicense" placeholder="e.g., L12345">
-    </div>
-    <div class="form-group">
-        <label>Email:</label>
-        <input type="email" id="docEmail" placeholder="e.g., perera@hospital.com">
-    </div>
-    <div class="form-group">
-        <label>Phone:</label>
-        <input type="text" id="docPhone" placeholder="e.g., 0771234567">
-    </div>
-    <button onclick="addDoctor()">Save Doctor Profile</button>
-</div>
+    <header>
+        <h1>Hospital Core Registry <span class="admin-badge">SYSTEM ADMIN</span></h1>
+    </header>
 
-<div class="container">
-    <h2>Registered Doctors Directory</h2>
-    <div id="doctorList"></div>
+    <div class="card">
+        <div class="card-title" id="form-panel-title">Register New Medical Practitioner</div>
+        <form id="doctorForm">
+            <input type="hidden" id="doctorId">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="doctorName">Full Name</label>
+                    <input type="text" id="doctorName" placeholder="Dr. Firstname Lastname" required>
+                </div>
+                <div class="form-group">
+                    <label for="specialization">Medical Specialization</label>
+                    <select id="specialization" required>
+                        <option value="" disabled selected>-- Select Specialization --</option>
+                        <option value="Cardiology">Cardiology</option>
+                        <option value="Dermatology">Dermatology</option>
+                        <option value="Neurology">Neurology</option>
+                        <option value="Pediatrics">Pediatrics</option>
+                        <option value="General Surgery">General Surgery</option>
+                        <option value="Psychiatry">Psychiatry</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="licenseNumber">SLMC License Number</label>
+                    <input type="text" id="licenseNumber" placeholder="SLMC-REG-XXXXX" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="doctor@hospital.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" id="phone" placeholder="e.g., 0771234567" required>
+                </div>
+                <div class="form-group" id="statusGroup" style="display: none;">
+                    <label for="status">Operational Status</label>
+                    <select id="status">
+                        <option value="Active">Active</option>
+                        <option value="On Leave">On Leave</option>
+                    </select>
+                </div>
+            </div>
+            <div class="btn-container">
+                <button type="submit" class="btn-primary" id="submitBtn">Save Practitioner Record</button>
+                <button type="button" class="btn-cancel" id="cancelBtn" onclick="resetForm()">Cancel Edit</button>
+            </div>
+        </form>
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table id="doctorsTable">
+            <thead>
+                <tr>
+                    <th>License No</th>
+                    <th>Name</th>
+                    <th>Specialization</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Administrative Actions</th>
+                </tr>
+            </thead>
+            <tbody id="doctorsTableBody">
+                </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
     const API_URL = "http://localhost:8080/api/doctors";
 
-    // Function 1: Fetch and display doctors from database
-    async function loadDoctors() {
+    document.addEventListener("DOMContentLoaded", fetchDoctors);
+
+    async function fetchDoctors() {
         try {
             const response = await fetch(API_URL);
             const doctors = await response.json();
-            const listDiv = document.getElementById("doctorList");
-            listDiv.innerHTML = ""; // Clear old items
-
-            if(doctors.length === 0) {
-                listDiv.innerHTML = "<p style='color: #777;'>No doctors registered yet.</p>";
-                return;
-            }
+            const tbody = document.getElementById("doctorsTableBody");
+            tbody.innerHTML = "";
 
             doctors.forEach(doc => {
-                listDiv.innerHTML += `
-                        <div class="doctor-card">
-                            <div>
-                                <strong>${doc.name}</strong> (${doc.specialization})<br>
-                                <small>Email: ${doc.email} | Phone: ${doc.phone}</small>
-                            </div>
-                            <button class="delete-btn" onclick="deleteDoctor(${doc.id})">Delete</button>
-                        </div>
-                    `;
+                const tr = document.createElement("tr");
+                const statusClass = doc.status === 'Active' ? 'status-active' : 'status-leave';
+                
+                const docJsonString = btoa(unescape(encodeURIComponent(JSON.stringify(doc))));
+                
+                tr.innerHTML = `
+                    <td style="font-weight: 600; color: #7f8c8d;">${doc.licenseNumber}</td>
+                    <td style="font-weight: 500;">${doc.name}</td>
+                    <td><span style="background: #eaeded; padding: 4px 8px; border-radius: 4px; font-size: 13px;">${doc.specialization}</span></td>
+                    <td>${doc.email}</td>
+                    <td>${doc.phone}</td>
+                    <td><span class="status-badge ${statusClass}">${doc.status}</span></td>
+                    <td class="actions">
+                        <button class="btn-edit" onclick="editDoctor('${docJsonString}')">Modify</button>
+                        <button class="btn-delete" onclick="deleteDoctor(${doc.id})">Remove</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
             });
         } catch (error) {
-            console.error("Error loading doctors:", error);
+            console.error("Error connecting to Doctor API:", error);
         }
     }
 
-    // Function 2: Send new doctor data to backend (POST)
-    async function addDoctor() {
-        const name = document.getElementById("docName").value;
-        const specialization = document.getElementById("docSpec").value;
-        const licenseNumber = document.getElementById("docLicense").value;
-        const email = document.getElementById("docEmail").value;
-        const phone = document.getElementById("docPhone").value;
-
-        if(!name || !specialization || !licenseNumber || !email || !phone) {
-            alert("Please fill in all fields!");
-            return;
-        }
-
-        const doctorData = { name, specialization, licenseNumber, email, phone };
+    document.getElementById("doctorForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        
+        const id = document.getElementById("doctorId").value;
+        const doctorData = {
+            name: document.getElementById("doctorName").value,
+            specialization: document.getElementById("specialization").value,
+            licenseNumber: document.getElementById("licenseNumber").value,
+            email: document.getElementById("email").value,
+            phone: document.getElementById("phone").value,
+            status: id ? document.getElementById("status").value : "Active"
+        };
 
         try {
-            const response = await fetch(API_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(doctorData)
-            });
-
-            if(response.ok) {
-                alert("Doctor saved successfully!");
-                // Clear inputs
-                document.getElementById("docName").value = "";
-                document.getElementById("docSpec").value = "";
-                document.getElementById("docLicense").value = "";
-                document.getElementById("docEmail").value = "";
-                document.getElementById("docPhone").value = "";
-                loadDoctors(); // Reload list
+            let response;
+            if (id) {
+                response = await fetch(`${API_URL}/${id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(doctorData)
+                });
             } else {
-                alert("Failed to save doctor. Check for duplicate Email/License.");
+                response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(doctorData)
+                });
+            }
+
+            if (response.ok) {
+                resetForm();
+                fetchDoctors();
             }
         } catch (error) {
-            console.error("Error adding doctor:", error);
+            console.error("Failed to save doctor details:", error);
         }
+    });
+
+    function editDoctor(encodedDoc) {
+        const doc = JSON.parse(decodeURIComponent(escape(atob(encodedDoc))));
+
+        document.getElementById("form-panel-title").innerText = "Modify Practitioner Record - ID: " + doc.id;
+        document.getElementById("doctorId").value = doc.id;
+        document.getElementById("doctorName").value = doc.name;
+        document.getElementById("specialization").value = doc.specialization;
+        document.getElementById("licenseNumber").value = doc.licenseNumber;
+        document.getElementById("email").value = doc.email;
+        document.getElementById("phone").value = doc.phone;
+        
+        document.getElementById("statusGroup").style.display = "flex";
+        document.getElementById("status").value = doc.status;
+        
+        document.getElementById("submitBtn").innerText = "Apply Updates";
+        document.getElementById("cancelBtn").style.display = "inline-block";
     }
 
-    // Function 3: Delete a doctor profile (DELETE)
     async function deleteDoctor(id) {
-        if(!confirm("Are you sure you want to delete this doctor?")) return;
-
-        try {
-            const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-            if(response.ok) {
-                alert("Doctor deleted successfully!");
-                loadDoctors();
+        if (confirm("Are you sure you want to permanently remove this doctor record?")) {
+            try {
+                const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+                if (response.ok) fetchDoctors();
+            } catch (error) {
+                console.error("Failed to execute deletion:", error);
             }
-        } catch (error) {
-            console.error("Error deleting doctor:", error);
         }
     }
 
-    // Run this automatically when the page loads up
-    loadDoctors();
+    function resetForm() {
+        document.getElementById("form-panel-title").innerText = "Register New Medical Practitioner";
+        document.getElementById("doctorId").value = "";
+        document.getElementById("doctorForm").reset();
+        document.getElementById("statusGroup").style.display = "none";
+        document.getElementById("submitBtn").innerText = "Save Practitioner Record";
+        document.getElementById("cancelBtn").style.display = "none";
+    }
 </script>
 </body>
 </html>
