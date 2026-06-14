@@ -6,16 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const cancelBtn = document.getElementById("cancelBtn");
     const submitBtn = document.getElementById("submitBtn");
 
-    // Arrays to temporarily store items added one-by-one in the UI form
     let addedServices = [];
     let addedMedicines = [];
 
-    // 💡 Port updated to 8082 and path changed to /api/billings for Billing Microservice
     const apiBaseUrl = "http://localhost:8080/api/billing";
 
-    // --- Dynamic Item Addition Operations ---
 
-    // Add Service to local list
     document.getElementById("addServiceBtn").addEventListener("click", () => {
         const nameSelect = document.getElementById("serviceSelect");
         const feeInput = document.getElementById("serviceFeeInput");
@@ -27,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         addedServices.push({
             serviceName: nameSelect.value,
-            serviceFee: parseFloat(feeInput.value) // 💡 Backend model එකේ නම serviceCost නිසා වෙනස් කළා
+            serviceFee: parseFloat(feeInput.value) 
         });
 
         nameSelect.value = "";
@@ -37,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Add Medicine to local list
     document.getElementById("addMedicineBtn").addEventListener("click", () => {
-        const idInput = document.getElementById("medicineIdInput") || document.getElementById("medicineNameInput"); // HTML එකේ ID එක
+        const idInput = document.getElementById("medicineIdInput") || document.getElementById("medicineNameInput"); 
         const qtyInput = document.getElementById("medQtyInput");
 
         if (!idInput.value || !qtyInput.value) {
@@ -45,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // 💡 Microservice සංකල්පයට අනුව යවන්නේ medicineId විතරයි. Name/Price Backend එකෙන් බලාගනී.
         addedMedicines.push({
             medicineId: parseInt(idInput.value),
             quantity: parseInt(qtyInput.value)
@@ -56,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
         renderItemsLists();
     });
 
-    // Display temporary items added in the UI container
     function renderItemsLists() {
         const servicesContainer = document.getElementById("servicesList");
         const medicinesContainer = document.getElementById("medicinesList");
@@ -72,7 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         medicinesContainer.innerHTML = addedMedicines.length === 0 ? '<span style="font-size:12px; color:#9ca3af;">No medicines added yet.</span>' : '';
         addedMedicines.forEach((med, index) => {
-            // Edit කරද්දී backend එකෙන් නම එවුවොත් පෙන්වන්න, නැත්නම් ID එක පෙන්වන්න
             const displayName = med.medicineName ? med.medicineName : `Medicine ID: ${med.medicineId}`;
             const displayPrice = med.unitPrice ? ` (Rs.${med.unitPrice} × ${med.quantity})` : ` (Qty: ${med.quantity})`;
             
@@ -84,7 +77,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Global handles to remove entries from array lists via the 'x' tag buttons
     window.removeServiceItem = function(index) {
         addedServices.splice(index, 1);
         renderItemsLists();
@@ -95,7 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
         renderItemsLists();
     };
 
-    // --- API Master Request Handlers ---
 
     function fetchBilling() {
         fetch(apiBaseUrl)
@@ -139,12 +130,11 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(err => console.error("Error fetching billings:", err));
     }
 
-    // Handle Form Submission Save Operation (POST or PUT)
     billingForm.addEventListener("submit", (e) => {
         e.preventDefault();
 
         const id = document.getElementById("billingId").value;
-        const patientIdInput = document.getElementById("patientId") || document.getElementById("patientName"); // HTML එකේ තියෙන input එක
+        const patientIdInput = document.getElementById("patientId") || document.getElementById("patientName"); 
         const paymentMethod = document.getElementById("paymentMethod").value;
         const paymentStatus = document.getElementById("paymentStatus").value;
 
@@ -153,9 +143,8 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // 💡 Payload structure updated to match Backend entity
         const payload = {
-            patientId: parseInt(patientIdInput.value), // 💡 patientName වෙනුවට patientId යවයි
+            patientId: parseInt(patientIdInput.value), 
             paymentMethod: paymentMethod,
             paymentStatus: paymentStatus,
             serviceItems: addedServices,
@@ -181,7 +170,6 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(error => console.error("Error processing record:", error));
     });
 
-    // Populate data back to inputs on Editing mode triggered
     window.editBilling = function(id) {
         fetch(`${apiBaseUrl}/${id}`)
             .then(response => response.json())
@@ -189,12 +177,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("billingId").value = billing.id;
                 
                 const patientIdInput = document.getElementById("patientId") || document.getElementById("patientName");
-                patientIdInput.value = billing.patientId; // ID එක පිරවීම
+                patientIdInput.value = billing.patientId; 
                 
                 document.getElementById("paymentMethod").value = billing.paymentMethod;
                 document.getElementById("paymentStatus").value = billing.paymentStatus;
                 
-                // Load items collections from backend database to local edit arrays
                 addedServices = billing.serviceItems || [];
                 addedMedicines = billing.medicineItems || [];
                 renderItemsLists();
