@@ -44,6 +44,7 @@ public class DoctorController {
                     existingDoctor.setPhone(doctorDetails.getPhone());
                     existingDoctor.setEmail(doctorDetails.getEmail());
                     existingDoctor.setStatus(doctorDetails.getStatus());
+                    existingDoctor.setLicenseNumber(doctorDetails.getLicenseNumber());
 
                     Doctor updatedDoctor = doctorRepository.save(existingDoctor);
                     return new ResponseEntity<>(updatedDoctor, HttpStatus.OK);
