@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/doctors")
-
 public class DoctorController {
 
     @Autowired
@@ -33,6 +32,22 @@ public class DoctorController {
     public ResponseEntity<Doctor> getDoctorById(@PathVariable Long id) {
         Optional<Doctor> doctor = doctorRepository.findById(id);
         return doctor.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Doctor> updateDoctor(@PathVariable Long id, @RequestBody Doctor doctorDetails) {
+        return doctorRepository.findById(id)
+                .map(existingDoctor -> {
+                    existingDoctor.setName(doctorDetails.getName());
+                    existingDoctor.setSpecialization(doctorDetails.getSpecialization());
+                    existingDoctor.setPhone(doctorDetails.getPhone());
+                    existingDoctor.setEmail(doctorDetails.getEmail());
+                    existingDoctor.setStatus(doctorDetails.getStatus());
+
+                    Doctor updatedDoctor = doctorRepository.save(existingDoctor);
+                    return new ResponseEntity<>(updatedDoctor, HttpStatus.OK);
+                })
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
